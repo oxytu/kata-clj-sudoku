@@ -4,7 +4,7 @@
   "Parses a row of a sudoku definition"
   [sudoku-row]
   (map #(if (= \. %)
-           nil
+           (range 0 10)
            (Integer/parseInt (str %))) sudoku-row))
 
 (defn parse-field
@@ -69,8 +69,7 @@
     (and  (>= x (first top-left))
           (<  x (first bottom-right))
           (>= y (nth top-left 1))
-          (<  y (nth bottom-right 1))
-          )))
+          (<  y (nth bottom-right 1)))))
 
 (defn map-row
   "Applies fn to sudoku row row-num in field"
@@ -86,3 +85,23 @@
   "Applies fn to a subfield of field"
   [fn sub-field field]
   (field-visitor fn (partial subfield-equals? sub-field) field))
+
+(defn calculate-sudoku-subfield-of
+  "Calculates the subfield a given point is in"
+  [x y]
+  (let [lower-x (* 3 (quot x 3))
+        upper-x (* 3 (inc (quot x 3)))
+        lower-y (* 3 (quot y 3))
+        upper-y (* 3 (inc (quot y 3)))]
+        [[lower-x lower-y] [upper-x upper-y]]))
+
+(defn contains-unresolved-fields?
+  "Determines whether a sudoku field still contains unresolved fields"
+  [sudoku-field]
+  (not (empty?
+      (filter
+        #(seq (filter vector? %))
+        sudoku-field))))
+
+
+
