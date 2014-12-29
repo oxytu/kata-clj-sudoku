@@ -88,10 +88,16 @@
 (defn calculate-sudoku-subfield-of
   "Calculates the subfield a given point is in"
   [x y]
-  (let [lower-x (* 3 (quot x 3))
-        upper-x (* 3 (inc (quot x 3)))
-        lower-y (* 3 (quot y 3))
-        upper-y (* 3 (inc (quot y 3)))]
+  (let [generic-raster (fn [inner-fn multiple number]
+                           (* multiple (inner-fn (quot number multiple))))
+        floor-three #(generic-raster identity 3 %)
+        ceil-three #(generic-raster inc 3 %)
+
+        lower-x (floor-three x)
+        upper-x (ceil-three x)
+        lower-y (floor-three y)
+        upper-y (ceil-three y)]
+
         [[lower-x lower-y] [upper-x upper-y]]))
 
 (defn contains-unresolved-fields?
