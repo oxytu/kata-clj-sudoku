@@ -29,13 +29,21 @@
 
 (deftest subfield-equals?-test
   (testing "Subfield is correctly calcualted"
-    (is (= true (subfield-equals? [[0 0] [2 2]] 1 1)))))
+    (is (= true (subfield-equals? [[0 0] [2 2]] nil 1 1)))))
 
 (deftest map-row-test
   (testing "A map-function that only applies to the first row"
     (is (= [[2 3]
             [3 4]]
-           (map-row #(inc %)
+           (map-row (fn [num _ _] (inc num))
+                    0
+                    [[1 2]
+                     [3 4]])))))
+
+(deftest filter-row-test
+  (testing "A filter-function that only applies to the first row and returns even cells"
+    (is (= [2]
+           (filter-row even?
                     0
                     [[1 2]
                      [3 4]])))))
@@ -44,7 +52,7 @@
   (testing "A map-function that only applies to the second column"
     (is (= [[1 3]
             [3 5]]
-           (map-col #(inc %)
+           (map-col (fn [num _ _] (inc num))
                     1
                     [[1 2]
                      [3 4]])))))
@@ -54,7 +62,7 @@
     (is (= [[2 3 3]
             [5 6 6]
             [7 8 9]]
-           (map-subfield #(inc %)
+           (map-subfield (fn [num _ _] (inc num))
                          [[0 0] [2 2]]
                          [[1 2 3]
                           [4 5 6]
